@@ -1,0 +1,5 @@
+-r base.txt
+
+WebTest==2.0.9
+mock==1.0.1
+django-webtest==1.7.5
