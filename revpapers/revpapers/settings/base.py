@@ -1,3 +1,16 @@
+import os
+
+from django.core.exceptions import ImproperlyConfigured
+
+msg = "Set the %s environment variable"
+
+def get_env_variable(var_name):
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = msg % var_name 
+        raise ImproperlyConfigured(error_msg)
+
 # Django settings for revpapers project.
 
 ADMINS = (
@@ -80,7 +93,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'm%e7zgw2pvy^$)!fw0w+7x&s&srgu^!i2c8*(i$8t-269!q15m'
+SECRET_KEY = get_env_variable('SECRET_KEY')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
