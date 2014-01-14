@@ -41,11 +41,16 @@ def install():
     # create database
     run_pgsql("CREATE DATABASE %s WITH OWNER %s" % (database, user),\
         user=pg_user)
-    
+
+def manage(cmd, options="", cmd_options=""):
+    local("python revpapers/manage.py %s %s %s" % (options, cmd, cmd_options))
+
 def deploy(location):
     if location == 'local':
+        settings = "--settings=revpapers.settings.develop"
         with shell_env(SECRET_KEY=secrets.SECRET_KEY):
-            local("python revpapers/manage.py runserver 0.0.0.0:8000 " \
-                "--settings=revpapers.settings.develop")
+            manage("syncdb", cmd_options=settings)
+            manage("migrate", cmd_options=settings)
+            manage("runserver",cmd_options="0.0.0.0:8000 "+ settings)
 
 
