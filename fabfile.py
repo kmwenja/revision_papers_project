@@ -28,16 +28,20 @@ def install():
     pg_user = "postgres"
     pg_host = "localhost"
 
-    # create user
+    # drop database if exists
+    run_pgsql("DROP DATABASE IF EXISTS %s" % database, user=pg_user)
+
+    # drop user if exists
     run_pgsql("DROP USER IF EXISTS %s" % user, user=pg_user)
+
+    # create user
     run_pgsql("""CREATE USER %s WITH NOCREATEDB NOCREATEUSER ENCRYPTED """\
         """PASSWORD '%s' """ % (user, password), user=pg_user)
 
     # create database
-    run_pgsql("DROP DATABASE IF EXISTS %s" % database, user=pg_user)
     run_pgsql("CREATE DATABASE %s WITH OWNER %s" % (database, user),\
         user=pg_user)
-
+    
 def deploy(location):
     if location == 'local':
         with shell_env(SECRET_KEY=secrets.SECRET_KEY):
